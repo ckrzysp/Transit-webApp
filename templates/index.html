@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYC GO</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Honk&display=swap" rel="stylesheet">
+    
+
+    <style>
+        body {
+            background-color: #e2a288;
+        }
+
+        .center{
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+            margin-top: 70px;
+        }
+
+        h1{
+            margin: 20px;
+            text-align: center;
+            color:white;
+            font-size: 85px;
+            font-family: 'Honk', system-ui;
+        }
+
+        label {
+            font-family: monospace;
+            font-size: 15px;
+            font-weight: bold;
+            margin: 15px;
+            text-align: center;
+        }
+
+        /* Style for submit button */
+        button {
+            margin-top: 30px; 
+            padding: 10px 20px; 
+            font-size: 16px; 
+            background-color: #1E8DBA; 
+            color: #fff; 
+            border: solid 4px rgb(17, 4, 0); 
+            border-radius: 5px; 
+            cursor: pointer; 
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+
+        }
+
+        /* Style for result container */
+        #result, #train-time-result {
+            text-align: center;
+            padding: 20px;
+            margin-top: 10px; 
+            font-size: 40px; 
+            font-family: monospace;
+            font-weight: bold;
+            color: #FF538F;
+        }
+
+        #train-time-result-1,
+        #train-time-result-2,
+        #train-time-result-3 {
+            text-align: center;
+ 
+            font-size: 40px; 
+            font-family: monospace;
+            font-weight: bold;
+            color:#ec407d;
+        }
+
+
+        #dropdown{
+            text-align: center;
+        }
+        /* Position the suggestion dropdown */
+        #current-station-suggestions {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            width: 300px; 
+            position: absolute;
+            background-color: #f9f9f9;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            left: 0;
+            margin-top: 35px;
+            margin-left: 330px;
+        }
+
+        #destination-station-suggestions {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            width: 300px; 
+            position: absolute;
+            background-color: #f9f9f9;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            left: 0;
+            margin-top: 35px;
+            margin-left: 930px;
+        }
+
+
+
+        
+
+        /* Style for autocomplete input fields */
+        input[type="text"] {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            position: static; 
+        }
+
+        
+
+        li {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        li:hover {
+            background-color: #f5c02fb6;
+        }
+
+
+        
+        .radiobuttons {
+            text-align: center;
+            padding:5px;
+            margin-top: 30px;
+        }
+        /* Style for radio buttons */
+        input[type="radio"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 20px; 
+            height: 20px; 
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Style for checked radio buttons */
+        input[type="radio"]:checked {
+            background-color: #f5c02f;
+            border-color: #FF538F;
+        }
+
+      
+
+        label {
+            margin-right: 15px; 
+        }
+      
+
+    
+    </style>
+
+</head>
+<body>
+
+    <img src="{{ url_for('static', filename='img1.webp') }}" class="center"> 
+
+    <h1>Welcome to NYC Go</h1>
+
+    <!-- input with suggestion dropdown -->
+    <div id="dropdown">
+    <label for="current-station-input">Search for Your Current Station:</label>
+    <input type="text" id="current-station-input" name="current-station" oninput="showSuggestions('current-station-input', 'current-station-suggestions')">
+    <ul id="current-station-suggestions"></ul>
+
+    <label for="destination-station-input">Search for Your Destination Station:</label>
+    <input type="text" id="destination-station-input" name="destination-station" oninput="showSuggestions('destination-station-input', 'destination-station-suggestions')">
+    <ul id="destination-station-suggestions"></ul>
+</div>
+    <!--type a train line-->
+
+    <div class="radiobuttons">
+        <div class="train-lines">
+        <label id="train-line">Select a Train Line:</label>
+        <br>
+        <br>
+        <br>
+        <input type="radio" id="blue_lines" name="line" value="A"> <label for="A">A</label>
+        <input type="radio" id="blue_lines" name="line" value="C"> <label for="C">C</label>
+        <input type="radio" id="blue_lines" name="line" value="E"> <label for="E">E</label>
+        <br>
+        <br>
+        <input type="radio" id="orange_lines" name="line" value="B"> <label for="B">B</label>
+        <input type="radio" id="orange_lines" name="line" value="D"> <label for="D">D</label>
+        <input type="radio" id="orange_lines" name="line" value="F"> <label for="F">F</label>
+        <input type="radio" id="orange_lines" name="line" value="M"> <label for="M">M</label>
+        <br>
+        <br>
+        <input type="radio" id="green_lines" name="line" value="G"> <label for="G">G</label>
+        <input type="radio" id="grey_lines" name="line" value="L"> <label for="L">L</label>
+        <input type="radio" id="brown_lines" name="line" value="J"> <label for="J">J</label>
+        <input type="radio" id="brown_lines" name="line" value="Z"> <label for="Z">Z</label>
+        <br>
+        <br>
+        <input type="radio" id="yellow_lines" name="line" value="N"> <label for="N">N</label>
+        <input type="radio" id="yellow_lines" name="line" value="Q"> <label for="Q">Q</label>
+        <input type="radio" id="yellow_lines" name="line" value="R"> <label for="R">R</label>
+        <input type="radio" id="yellow_lines" name="line" value="W"> <label for="W">W</label>
+        <br>
+        <br>
+        <input type="radio" id="red_lines" name="line" value="1"> <label for="1">1</label>
+        <input type="radio" id="red_lines" name="line" value="2"> <label for="2">2</label>
+        <input type="radio" id="red_lines" name="line" value="3"> <label for="3">3</label>
+        <br>
+        <br>
+        <input type="radio" id="green_lines" name="line" value="4"> <label for="4">4</label>
+        <input type="radio" id="green_lines" name="line" value="5"> <label for="5">5</label>
+        <input type="radio" id="green_lines" name="line" value="6"> <label for="6">6</label>
+        <input type="radio" id="green_lines" name="line" value="7"> <label for="7">7</label> 
+    </div>
+    </div>
+
+
+    <!-- HTML code for radio buttons and submit button -->
+    
+    <div class="radiobuttons">
+    <label>Select Direction:</label>
+    <input type="radio" id="uptown" name="direction" value="Uptown">
+    <label for="uptown">Uptown</label>
+    <input type="radio" id="downtown" name="direction" value="Downtown">
+    <label for="downtown">Downtown</label>
+    </div>
+
+    <button id="submit-button">Submit</button> 
+
+    <!-- Result container for displaying travel time -->
+    <div id="result"></div>
+    <div id="train-time-result"></div>
+    <div id="train-time-result-1"></div>
+    <div id="train-time-result-2"></div>
+    <div id="train-time-result-3"></div>
+
+    <script>
+
+        function showSuggestions(inputId, suggestionsId) 
+        {
+            var input = document.getElementById(inputId);
+            var suggestionsList = document.getElementById(suggestionsId);
+
+            while (suggestionsList.firstChild) {
+                suggestionsList.removeChild(suggestionsList.firstChild);
+            }
+
+            if (input.value.trim() !== "") {
+                fetch(`/get_station_suggestions/${input.value.trim()}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(suggestion => {
+                            var listItem = document.createElement('li');
+                            listItem.textContent = suggestion;
+                            listItem.addEventListener('click', function () {
+                                input.value = suggestion;
+                                suggestionsList.innerHTML = "";
+                            });
+                            suggestionsList.appendChild(listItem);
+                        });
+                    });
+            }
+        }
+
+        function fetchTravelTime(currentStation, destinationStation, trainLine, direction) {
+            // Fetch data from server to calculate travel time
+            fetch('/process_stations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'current-station': currentStation,
+                    'destination-station': destinationStation,
+                    'train-line': trainLine,
+                    'direction': direction
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the travel time in the result container
+                var resultContainer = document.getElementById('result');
+                console.log("fetching data" + data);
+
+                var travel_time = data[1];
+                resultContainer.textContent = 'Travel time: ' + travel_time  + ' minutes\n ';
+                
+                document.getElementById('train-time-result').innerHTML = 'The next trains will arrive at:';
+                document.getElementById('train-time-result-1').innerHTML =  data[0][0];
+                document.getElementById('train-time-result-2').innerHTML =  data[0][1];
+                document.getElementById('train-time-result-3').innerHTML =  data[0][2];
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        document.getElementById('submit-button').addEventListener('click', function() {
+            var currentStation = document.getElementById('current-station-input').value;
+            var destinationStation = document.getElementById('destination-station-input').value;
+
+            var direction;
+
+            // Checking which radio button is selected
+            if (document.getElementById('uptown').checked) {
+                direction = "N";
+            } else if (document.getElementById('downtown').checked) {
+                direction = "S";
+            }
+
+            var line = document.getElementsByName('line');
+            var trainLine;
+            for(var i = 0; i < line.length; i++){
+                if(line[i].checked){
+                    trainLine = line[i].value;
+                    break;
+                }
+            }            
+            console.log(trainLine)
+
+            // Fetch the travel time using the trip function
+            fetchTravelTime(currentStation, destinationStation, trainLine, direction);
+        });
+
+        
+    </script>
+
+</body>
+</html>
